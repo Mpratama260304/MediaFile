@@ -41,9 +41,10 @@ app.use('/api/admin', require('./routes/admin'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
+  const clientDist = process.env.CLIENT_DIST_PATH || path.join(__dirname, '../../client/dist');
+  app.use(express.static(clientDist));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+    res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
 

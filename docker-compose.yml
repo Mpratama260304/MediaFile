@@ -1,0 +1,34 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mediafile
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/mediafile
+      JWT_SECRET: ${JWT_SECRET:-change_this_to_a_strong_secret}
+      JWT_EXPIRES_IN: 7d
+      UPLOAD_DIR: /app/uploads
+      MAX_FILE_SIZE: "10737418240"
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5000}
+      CLIENT_DIST_PATH: /app/client-dist
+    volumes:
+      - uploads:/app/uploads
+
+volumes:
+  mongo-data:
+  uploads:
