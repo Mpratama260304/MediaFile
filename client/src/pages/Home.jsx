@@ -37,11 +37,11 @@ export default function Home() {
             </>
           ) : (
             <>
-              <Link to="/register" className="btn-primary text-lg px-8 py-3">
-                Get Started Free
+              <Link to="/guest-upload" className="btn-primary text-lg px-8 py-3">
+                Upload Now — No Account Needed
               </Link>
-              <Link to="/login" className="btn-secondary text-lg px-8 py-3">
-                Sign In
+              <Link to="/register" className="btn-secondary text-lg px-8 py-3">
+                Create Account
               </Link>
             </>
           )}

@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const uploadDir = process.env.UPLOAD_DIR || './uploads';
 
-// Upload file
+// Upload file (supports both authenticated users and guests)
 exports.uploadFile = async (req, res) => {
   try {
     if (!req.file) {
@@ -14,6 +14,7 @@ exports.uploadFile = async (req, res) => {
     }
 
     const { folder } = req.body;
+    const isGuest = !req.user;
 
     const file = await File.create({
       originalName: req.file.originalname,
@@ -21,15 +22,18 @@ exports.uploadFile = async (req, res) => {
       mimeType: req.file.mimetype,
       size: req.file.size,
       path: req.file.path,
-      user: req.user._id,
-      folder: folder || null,
+      user: isGuest ? null : req.user._id,
+      folder: isGuest ? null : (folder || null),
       shareLink: uuidv4(),
+      isPublic: isGuest, // Guest uploads are shared by default
     });
 
-    // Update user storage used
-    await User.findByIdAndUpdate(req.user._id, {
-      $inc: { storageUsed: req.file.size },
-    });
+    // Update user storage used (only for authenticated users)
+    if (!isGuest) {
+      await User.findByIdAndUpdate(req.user._id, {
+        $inc: { storageUsed: req.file.size },
+      });
+    }
 
     res.status(201).json({ message: 'File uploaded successfully', file });
   } catch (error) {

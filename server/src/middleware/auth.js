@@ -27,6 +27,24 @@ const auth = async (req, res, next) => {
   }
 };
 
+// Optional auth — attaches user if token is valid, continues regardless
+const optionalAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (user && user.isActive) {
+        req.user = user;
+      }
+    }
+  } catch {
+    // Ignore auth errors — proceed as guest
+  }
+  next();
+};
+
 // Require admin role
 const adminOnly = (req, res, next) => {
   if (req.user.role !== 'admin') {
@@ -44,4 +62,4 @@ const generateToken = (user) => {
   );
 };
 
-module.exports = { auth, adminOnly, generateToken };
+module.exports = { auth, optionalAuth, adminOnly, generateToken };

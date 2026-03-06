@@ -13,7 +13,8 @@ if (!fs.existsSync(uploadDir)) {
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const userDir = path.join(uploadDir, req.user._id.toString());
+    const dirName = req.user ? req.user._id.toString() : 'guest';
+    const userDir = path.join(uploadDir, dirName);
     if (!fs.existsSync(userDir)) {
       fs.mkdirSync(userDir, { recursive: true });
     }
@@ -47,7 +48,8 @@ const upload = multer({
 // Chunk upload storage
 const chunkStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const chunkDir = path.join(uploadDir, 'chunks', req.user._id.toString());
+    const dirName = req.user ? req.user._id.toString() : 'guest';
+    const chunkDir = path.join(uploadDir, 'chunks', dirName);
     if (!fs.existsSync(chunkDir)) {
       fs.mkdirSync(chunkDir, { recursive: true });
     }

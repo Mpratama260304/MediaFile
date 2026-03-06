@@ -12,6 +12,7 @@ import FolderView from './pages/FolderView';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import SharedFile from './pages/SharedFile';
+import GuestUpload from './pages/GuestUpload';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ManageUsers from './pages/admin/ManageUsers';
 import ManageFiles from './pages/admin/ManageFiles';
@@ -28,6 +29,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/shared/:shareLink" element={<SharedFile />} />
+              <Route path="/guest-upload" element={<GuestUpload />} />
 
               {/* Protected routes */}
               <Route element={<ProtectedRoute />}>
